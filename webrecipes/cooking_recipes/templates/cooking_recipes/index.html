@@ -1,10 +1,121 @@
 {% extends 'cooking_recipes/base.html' %}
+{% load static %}
 
 {% block title %}
 Главная страница
 {% endblock title %}
 
 {% block content %}
-    <h1>Главная страница</h1>
-    <p>Просто главаня страница</p>
+
+    <div class="d-flex justify-content-between align-items-center">
+      <form class="form-inline my-2 my-lg-0 flex-grow-1" onsubmit="return false;">
+        <div class="input-group w-100">
+          <input class="form-control" type="search" placeholder="Поиск" aria-label="Поиск" onkeydown="if (event.keyCode == 13) { this.form.submit(); }">
+        </div>
+      </form>
+      <button class="btn btn-outline-secondary btn-block" type="button">Найти</button>
+    </div>
+
+    <div class="container">
+        <ul style="list-style-type: none; margin: 0; padding: 0; overflow: hidden; padding-top: 10px;">
+            {% for category in categories %}
+            <li style="float: left; margin-right: 10px;"><a href="{{ category.get_absolute_url }}" style="display: block; color: #000; text-align: center; padding: 14px 16px; text-decoration: none; border: 1px solid #000; border-radius: 10px; transition: background-color 0.3s ease; }">{{ category.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <style>
+        a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+
+    <div class="input-group-append">
+        <a class="btn btn-outline-success btn-block" href="{% url 'crt_rec' %}">Создать рецепт</a>
+    </div>
+
+    <img class="main_img" src="{% static 'cooking_recipes/images/main2.jpg' %}" alt="Описание изображения"
+    width="1200" height="700">
+
+<!--    <ul class="list-recipes">-->
+<!--        {% for r in recipes %}-->
+<!--                <li><div class="recipe-panel">-->
+<!--        <p class="first">Категория: {{r.ctg}}</p>-->
+<!--        <p class="last">Дата: {{r.time_update|date:"d-m-Y H:i:s"}}</p>-->
+<!--    </div>-->
+
+<!--    {% if r.img %}-->
+<!--        <p><img class="img-recipe-left thumb" src="{{r.img.url}}"></p>-->
+<!--    {% endif%}-->
+
+<!--                    <h2>{{r.title}}</h2>-->
+<!--        {% autoescape on %}-->
+<!--        {{r.recipe_description|linebreaks|truncatewords:50}}-->
+<!--        {% endautoescape %}-->
+<!--                <div class="clear"></div>-->
+<!--                <p class="link-read-recipe"><a href="{{ r.get_absolute_url }}">Подробнее</a></p>-->
+<!--                </li>-->
+<!--        {% endfor %}-->
+<!--    </ul>-->
+
+<style>
+    .list-recipes {
+  list-style: none;
+}
+
+.recipe-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Выравниваем элементы по верхнему краю */
+}
+
+.link-read-recipe {
+  background-color: darkblue;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 1px;
+  vertical-align: bottom;
+}
+
+li {
+  clear: both; /* Отменяем обтекание */
+  border-top: 1px solid gray;
+  padding-top: 20px;
+}
+
+.info {
+  display: flex; /* Делаем элемент флекс-контейнером */
+  flex-direction: column; /* Устанавливаем вертикальное направление */
+  justify-content: space-between; /* Распределяем элементы по вертикали */
+  margin-left: 0; /* Убираем отступ слева */
+}
+</style>
+
+    <ul class="list-recipes">
+        {% for r in recipes %}
+        <li>
+
+            {% if r.img %}
+            <img class="img-recipe-left thumb" src="{{r.img.url}}" width="300" height="200" style="float: left;">
+            {% endif%}
+            <div class="recipe-panel">
+                <h2>{{r.title}}</h2>
+                <div>
+                  <p class="first">Категория: {{r.ctg}}</p>
+                  <p class="last">Дата: {{r.time_update|date:"d-m-Y H:i:s"}}</p>
+                </div>
+            </div>
+            <div class="info">
+                {% autoescape on %}
+                {{r.recipe_description|linebreaks|truncatewords:50}}
+                {% endautoescape %}
+                <button class="link-read-recipe" onclick="window.location.href = '{{ r.get_absolute_url }}';">Подробнее</button>
+            </div>
+            <div class="clear"></div>
+        </li>
+        {% endfor %}
+    </ul>
+
 {% endblock content %}

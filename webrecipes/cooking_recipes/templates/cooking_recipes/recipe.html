@@ -1,0 +1,93 @@
+{% extends 'cooking_recipes/base.html' %}
+{% block content %}
+
+<style>
+    h1 {
+    text-align: center; /* Выравниваем текст по центру */
+}
+
+    textarea {
+    height: 100px; /* Устанавливаем высоту поля в 100 пикселей */
+}
+
+    .button-edit {
+  background-color: white; /* Устанавливаем белый цвет фона */
+  border-color: blue; /* Устанавливаем синий цвет границы */
+  color: blue; /* Устанавливаем синий цвет текста */
+}
+
+/* Стиль для кнопки Редактировать при наведении */
+.button-edit:hover {
+  background-color: blue; /* Устанавливаем синий цвет фона */
+  border-color: white; /* Устанавливаем белый цвет границы */
+  color: white; /* Устанавливаем белый цвет текста */
+}
+
+/* Стиль для кнопки Удалить */
+.button-delete {
+  background-color: white; /* Устанавливаем белый цвет фона */
+  border-color: red; /* Устанавливаем красный цвет границы */
+  color: red; /* Устанавливаем красный цвет текста */
+}
+
+/* Стиль для кнопки Удалить при наведении */
+.button-delete:hover {
+  background-color: red; /* Устанавливаем красный цвет фона */
+  border-color: white; /* Устанавливаем белый цвет границы */
+  color: white; /* Устанавливаем белый цвет текста */
+}
+
+/* Стиль для кнопки Отправить */
+.button-submit {
+  background-color: white; /* Устанавливаем белый цвет фона */
+  border-color: black; /* Устанавливаем черный цвет границы */
+  color: black; /* Устанавливаем черный цвет текста */
+}
+
+/* Стиль для кнопки Отправить при наведении */
+.button-submit:hover {
+  background-color: black; /* Устанавливаем черный цвет фона */
+  border-color: white; /* Устанавливаем белый цвет границы */
+  color: white; /* Устанавливаем белый цвет текста */
+}
+
+textarea {
+  width: 80%;
+  height: 50px;
+  max-height: 50px;
+}
+</style>
+
+<div class="container">
+    <p><small class="text-muted">Создано {{ recipe.time_created|date:"d.m.Y в H:i" }}</small></p>
+    <div class="buttons">
+        <button type="button" class="button-edit">Редактировать</button>
+        <button type="button" class="button-delete">Удалить</button>
+    </div>
+    <h1>{{ recipe.title }}</h1>
+    {% if recipe.img %}
+        <img src="{{ recipe.img.url }}" alt="{{ recipe.title }}" class="img-fluid">
+    {% endif%}
+    <p>{{ recipe.recipe_description }}</p>
+
+    {% for step in recipe.steps_set.all %}
+    <div class="step">
+        <h3>Шаг {{ forloop.counter }}</h3>
+        <p>{{ step.step_description }}</p>
+    </div>
+    {% endfor %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button  type="submit" class="button-submit">Отправить</button>
+    </form>
+    {% for comment in comments %}
+    <div class="comment">
+        <p><strong>{{ comment.user_id.username }}</strong></p>
+        <p>{{ comment.comment_text }}</p>
+    </div>
+    {% endfor %}
+
+
+</div>
+{% endblock %}

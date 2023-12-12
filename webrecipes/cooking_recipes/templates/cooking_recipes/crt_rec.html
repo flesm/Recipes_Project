@@ -1,0 +1,88 @@
+{% extends 'cooking_recipes/base.html' %}
+{% load static %}
+
+{% block title %}
+Создание рецепта
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    label {
+        color: #8B0000;
+        font-weight: bold;
+    }
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    button {
+        background-color: #8B0000;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #6A0000;
+    }
+</style>
+<form method="POST" action="{% url 'create_recipe' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="container">
+        <h1 style="color: #8B0000;">Рецепт</h1>
+        <label for="recipe_name">Название рецепта:</label>
+        <input type="text" id="recipe_name" name="recipe_name">
+        <label for="recipe_description">Краткое описание рецепта:</label>
+        <textarea id="recipe_description" name="recipe_description"></textarea>
+        <label for="recipe_image" style="display: block;">Фото:</label>
+        <input type="file" id="recipe_image" name="recipe_image" style="display: block;">
+        <label for="recipe_category" style="display: block;">Категория рецепта:</label>
+        <select id="recipe_category" name="recipe_category" style="display: block; width: 200px;">
+            {% for category in categories %}
+                <option value="{{category}}">{{category.name}}</option>
+            {% endfor %}
+        </select>
+        <label for="step1">Шаги:</label>
+        <div id="steps-container">
+            <textarea id="step1" name="step1"></textarea>
+        </div>
+        <button type="button" onclick="addStep()">Добавить шаг</button>
+        <button type="submit">Создать</button>
+    </div>
+</form>
+
+<script>
+  function addStep() {
+    const container = document.getElementById('steps-container');
+    const lastStepInput = container.querySelector('textarea[name^="step"]:last-of-type');
+    const newStepInput = lastStepInput.cloneNode(true);
+    const stepNumber = parseInt(newStepInput.name.match(/\d+/)[0]) + 1;
+    newStepInput.name = `step${stepNumber}`;
+    newStepInput.value = ''; // Clear the cloned input
+    container.appendChild(newStepInput);
+}
+</script>
+
+{% endblock content %}

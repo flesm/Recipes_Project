@@ -1,0 +1,70 @@
+{% extends 'cooking_recipes/base.html' %}
+
+{% block title %}
+{{ category.name }}
+{% endblock title %}
+
+{% block content %}
+<style>
+h1 {
+  text-align: center; 
+}
+
+    .list-recipes {
+  list-style: none;
+}
+
+.recipe-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Выравниваем элементы по верхнему краю */
+}
+
+.link-read-recipe {
+  background-color: darkblue;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 1px;
+  vertical-align: bottom;
+}
+
+li {
+  clear: both; /* Отменяем обтекание */
+  border-top: 1px solid gray;
+  padding-top: 20px;
+}
+
+.info {
+  display: flex; /* Делаем элемент флекс-контейнером */
+  flex-direction: column; /* Устанавливаем вертикальное направление */
+  justify-content: space-between; /* Распределяем элементы по вертикали */
+  margin-left: 0; /* Убираем отступ слева */
+}
+</style>
+    <h1>{{ category.name }} </h1>
+    <ul class="list-recipes">
+        {% for r in category.recipes_set.all %} <!-- Выводим все рецепты, принадлежащие данной категории -->
+        <li>
+
+            {% if r.img %}
+            <img class="img-recipe-left thumb" src="{{r.img.url}}" width="300" height="200" style="float: left;">
+            {% endif%}
+            <div class="recipe-panel">
+                <h2>{{r.title}}</h2>
+                <div>
+                  <p class="first">Категория: {{r.ctg}}</p>
+                  <p class="last">Дата: {{r.time_update|date:"d-m-Y H:i:s"}}</p>
+                </div>
+            </div>
+            <div class="info">
+                {% autoescape on %}
+                {{r.recipe_description|linebreaks|truncatewords:50}}
+                {% endautoescape %}
+                <button class="link-read-recipe" onclick="window.location.href = '{{ r.get_absolute_url }}';">Подробнее</button>
+            </div>
+            <div class="clear"></div>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
